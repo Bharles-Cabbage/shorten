@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	"math/rand"
 	"os"
 
@@ -10,28 +11,30 @@ import (
 )
 
 const (
-	host   = "localhost"
-	port   = "5432"
-	user   = "postgres"
-	dbname = "golang_practice"
+	host     = "localhost"
+	user     = "postgres"
+	password = "docker"
+	dbname   = "golang_practice"
 )
+
+type urlShort struct {
+	url  string
+	slug string
+}
 
 func main() {
 	router := gin.Default()
 	router.LoadHTMLFiles("static/html/index.html")
 
-	psqlconn := "host=" + host + " port=" + port + " user=" + user + " password=" + os.Getenv("POSTGRESQL_PASSWORD") + " dbname=" + dbname + " sslmode=disable"
+	psqlconn := "host=" + host + " port=5432 user=" + user + " password=" + os.Getenv("POSTGRESQL_PASSWORD") + " dbname=" + dbname + " sslmode=disable"
 
 	db, err := sql.Open("postgres", psqlconn)
-	if err != nil {
-		panic(err)
-	}
-
+	checkError(err)
 	defer db.Close()
+
+	fmt.Printf("SUCCESFUL DB CONECT")
 	err = db.Ping()
-	if err != nil {
-		panic(err)
-	}
+	checkError(err)
 
 	router.GET("/", func(c *gin.Context) {
 		c.HTML(200, "index.html", gin.H{
@@ -40,11 +43,17 @@ func main() {
 	})
 
 	router.POST("/shorten", func(c *gin.Context) {
+		var shorturl urlShort
+
 		url := c.PostForm("url")
 
-		shortURL := randString()
+		generatedSlug := randString()
 
-		c.String(200, url+shortURL)
+		query := "SELECT * FROM urlshortner WHERE slug='AoI023iO';"
+		err := db.QueryRow(query).Scan(&shorturl.url, &shorturl.slug)
+		checkError(err)
+
+		c.String(200, url+" "+generatedSlug+" "+shorturl.url+" "+shorturl.slug)
 	})
 
 	// To be handled in future ... maybe ... not sure
@@ -64,4 +73,10 @@ func randString() string {
 	}
 
 	return string(randStr)
+}
+
+func checkError(err error) {
+	if err != nil {
+		panic(err)
+	}
 }
