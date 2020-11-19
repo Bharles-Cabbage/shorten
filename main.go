@@ -44,16 +44,26 @@ func main() {
 
 	router.POST("/shorten", func(c *gin.Context) {
 		var shorturl urlShort
-
+		var generatedSlug string
+		var query string
 		url := c.PostForm("url")
 
-		generatedSlug := randString()
+		// Generate Random string until record for it is NOT found in the database
+		for {
+			generatedSlug = randString()
 
-		query := "SELECT * FROM urlshortner WHERE slug='AoI023iO';"
-		err := db.QueryRow(query).Scan(&shorturl.url, &shorturl.slug)
-		checkError(err)
+			query = "SELECT * FROM urlshortner WHERE slug='" + generatedSlug + "';"
+			err := db.QueryRow(query).Scan(&shorturl.url, &shorturl.slug)
 
-		c.String(200, url+" "+generatedSlug+" "+shorturl.url+" "+shorturl.slug)
+			if err != nil {
+				break
+			}
+		}
+
+		// query = "INSERT INTO urlshortner VALUES('" + url + "','" + generatedSlug + "');"
+		// err := db.
+
+		c.String(200, url+" | "+generatedSlug+" | "+shorturl.url+" | "+shorturl.slug)
 	})
 
 	// To be handled in future ... maybe ... not sure
