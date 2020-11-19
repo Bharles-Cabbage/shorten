@@ -44,24 +44,40 @@ func main() {
 
 	router.POST("/shorten", func(c *gin.Context) {
 		var shorturl urlShort
+		var newshorturl urlShort
 		var generatedSlug string
 		var query string
 		url := c.PostForm("url")
 
-		// Generate Random string until record for it is NOT found in the database
-		for {
-			generatedSlug = randString()
+		generatedSlug = "Not generated this time"
+
+		query = "SELECT * FROM urlshortner WHERE url='" + url + "'"
+		err := db.QueryRow(query).Scan(&shorturl.url, &shorturl.slug)
+
+		// IF Entered URL not in database generate a new url
+		if err == sql.ErrNoRows {
+			// Generate Random string until record for it is NOT found in the database
+			for {
+				generatedSlug = randString()
+
+				query = "SELECT * FROM urlshortner WHERE slug='" + generatedSlug + "';"
+				err = db.QueryRow(query).Scan(&newshorturl.url, &newshorturl.slug)
+
+				if err != nil {
+					break
+				}
+			}
+
+			query = "INSERT INTO urlshortner VALUES($1, $2);"
+			_, err := db.Exec(query, url, generatedSlug)
+			checkError(err)
 
 			query = "SELECT * FROM urlshortner WHERE slug='" + generatedSlug + "';"
-			err := db.QueryRow(query).Scan(&shorturl.url, &shorturl.slug)
-
-			if err != nil {
-				break
-			}
+			err = db.QueryRow(query).Scan(&newshorturl.url, &newshorturl.slug)
+			checkError(err)
+		} else if err != nil {
+			checkError(err)
 		}
-
-		// query = "INSERT INTO urlshortner VALUES('" + url + "','" + generatedSlug + "');"
-		// err := db.
 
 		c.String(200, url+" | "+generatedSlug+" | "+shorturl.url+" | "+shorturl.slug)
 	})
