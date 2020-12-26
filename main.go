@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math/rand"
 	"os"
+    "net/http"
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/lib/pq"
@@ -26,14 +27,48 @@ type URISlug struct{
     Slug string `uri:"url" binding:"required"`
 }
 
+func dbFunc(db *sql.DB) gin.HandlerFunc {
+    return func(c *gin.Context) {
+        if _, err := db.Exec("CREATE TABLE IF NOT EXISTS urlshortner (URL char(2000) PRIMARY KEY, SLUG CHAR(9) NOT NULL"); err != nil {
+            c.String(http.StatusInternalServerError,
+                fmt.Sprintf("Error creating database table: %q", err))
+            return
+        }
+
+        if _, err := db.Exec("INSERT INTO urlshortner VALUES ('test-url','test-slug')"); err != nil {
+            c.String(http.StatusInternalServerError,
+                fmt.Sprintf("Error inserting into table %q", err))
+            return
+        }
+
+        rows, err := db.Query("SELECT * FROM urlshortner")
+        if err != nil {
+            c.String(http.StatusInternalServerError,
+                fmt.Sprintf("Error reading urlshortner: %q", err))
+            return
+        }
+
+        defer rows.Close()
+        for rows.Next() {
+            var url urlShort
+            if err := rows.Scan(&url); err != nil {
+                c.String(http.StatusInternalServerError,
+                    fmt.Sprintf("Error scanning urlshortner: %q", err))
+                return
+            }
+            c.String(http.StatusOK, fmt.Sprintf("Read from DB: %s\n", "urlshortner"))
+        }
+    }
+}
+
 func main() {
 	router := gin.Default()
 	router.LoadHTMLFiles("static/html/index.tmpl")
     router.StaticFile("/static/main.css", "static/css/main.css")
 
-	psqlconn := "host=" + host + " port=5432 user=" + user + " password=" + os.Getenv("POSTGRESQL_PASSWORD") + " dbname=" + dbname + " sslmode=disable"
+	//psqlconn := "host=" + host + " port=5432 user=" + user + " password=" + os.Getenv("POSTGRESQL_PASSWORD") + " dbname=" + dbname + " sslmode=disable"
 
-	db, err := sql.Open("postgres", psqlconn)
+	db, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
 	checkError(err)
 	defer db.Close()
 
@@ -115,6 +150,8 @@ func main() {
 	router.POST("/api", func(c *gin.Context) {
 		c.String(200, "JSON post API")
 	})
+
+    router.GET("/db", dbFunc(db))
 
 	router.Run(":8080")
 }
