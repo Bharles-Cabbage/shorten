@@ -1,0 +1,20 @@
+body {
+    text-align: center;
+    width: 40%;
+    margin: 1em auto;
+    background: #2d2d2d;
+    color: #c4c4c4;
+}
+
+form {
+    margin: 2em;
+}
+
+.form-control{
+    background-color: #161616;
+}
+
+.btn{
+    background: #1c3954;
+    color: #c4c4c4;
+}

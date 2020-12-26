@@ -28,7 +28,8 @@ type URISlug struct{
 
 func main() {
 	router := gin.Default()
-	router.LoadHTMLFiles("static/html/index.html")
+	router.LoadHTMLFiles("static/html/index.tmpl")
+    router.StaticFile("/static/main.css", "static/css/main.css")
 
 	psqlconn := "host=" + host + " port=5432 user=" + user + " password=" + os.Getenv("POSTGRESQL_PASSWORD") + " dbname=" + dbname + " sslmode=disable"
 
@@ -41,12 +42,12 @@ func main() {
 	checkError(err)
 
 	router.GET("/", func(c *gin.Context) {
-		c.HTML(200, "index.html", gin.H{
+		c.HTML(200, "index.tmpl", gin.H{
 			"title": "HTML Files load",
 		})
 	})
 
-    router.GET("/:url", func(c *gin.Context){
+    router.GET("/r/:url", func(c *gin.Context){
         var uri URISlug
         var shortURL urlShort
 		if err := c.ShouldBindUri(&uri); err != nil {
@@ -64,7 +65,7 @@ func main() {
 
     })
 
-	router.POST("/shorten", func(c *gin.Context) {
+	router.POST("/", func(c *gin.Context) {
 		var shorturl urlShort
 		var newshorturl urlShort
 		var generatedSlug string
@@ -101,7 +102,13 @@ func main() {
 			checkError(err)
 		}
 
-		c.String(200, url+" | "+generatedSlug+" | "+shorturl.url+" | "+shorturl.slug)
+        c.HTML(200, "index.tmpl", gin.H{
+            "ShortURL": shorturl.slug,
+        })
+		//c.String(200, url+" | "+generatedSlug+" | "+shorturl.url+" | "+shorturl.slug)
+        //c.Redirect(200, "/", gin.H{
+            //"ShortURL": shorturl.slug,
+        //})
 	})
 
 	// To be handled in future ... maybe ... not sure
