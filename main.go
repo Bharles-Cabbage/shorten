@@ -22,6 +22,10 @@ type urlShort struct {
 	slug string
 }
 
+type URISlug struct{
+    Slug string `uri:"url" binding:"required"`
+}
+
 func main() {
 	router := gin.Default()
 	router.LoadHTMLFiles("static/html/index.html")
@@ -41,6 +45,24 @@ func main() {
 			"title": "HTML Files load",
 		})
 	})
+
+    router.GET("/:url", func(c *gin.Context){
+        var uri URISlug
+        var shortURL urlShort
+		if err := c.ShouldBindUri(&uri); err != nil {
+			c.JSON(400, gin.H{"msg": err})
+			return
+		}
+
+        query := "SELECT * FROM urlshortner WHERE slug='"+ uri.Slug +"'"
+        err = db.QueryRow(query).Scan(&shortURL.url, &shortURL.slug)
+
+        if err != nil {
+            c.JSON(404, gin.H{"err": "Page not Found", "description": "No records associated with the URL found"})
+        }
+        c.Redirect(301, shortURL.url)
+
+    })
 
 	router.POST("/shorten", func(c *gin.Context) {
 		var shorturl urlShort
