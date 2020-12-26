@@ -153,7 +153,7 @@ func main() {
 
     router.GET("/db", dbFunc(db))
 
-	router.Run(":8080")
+	router.Run()
 }
 
 func randString() string {
