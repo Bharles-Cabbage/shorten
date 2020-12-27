@@ -12,14 +12,10 @@
 <body>
    <h3>Shorten URLs</h3>
 
-   <form action="/" method="POST">
-        <div class="form-floating mb-3">
-            <input type="url" name="url" class="form-control" id="floatingInput" placeholder="https://www.example.com/products/" required>
-            <label for="floatingInput">URL to be Shortened</label>
-        </div>
-
-        <button type="submit" class="btn">Generate URL</button>
-   </form>
-
+   <div>
+        Genrated URL: <a class="text-decoration-none gen" href="http://shorten69.herokuapp.com/r/{{ .ShortURL }}">shorten69.herokuapp.com/r/{{ .ShortURL }}</a>
+        <br>
+        <a href="/" class="gen text-decoration-none">Generate more</a>
+   </div>
 </body>
 </html>

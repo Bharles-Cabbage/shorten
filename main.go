@@ -11,13 +11,6 @@ import (
 	_ "github.com/lib/pq"
 )
 
-//const (
-	//host     = "localhost"
-	//user     = "postgres"
-	//password = "docker"
-	//dbname   = "golang_practice"
-//)
-
 type urlShort struct {
 	url  string 
 	slug string
@@ -100,7 +93,7 @@ func main() {
 
     })
 
-	router.POST("/", func(c *gin.Context) {
+	router.POST("/short", func(c *gin.Context) {
 		var shorturl urlShort
 		var newshorturl urlShort
 		var generatedSlug string
@@ -137,13 +130,9 @@ func main() {
 			checkError(err)
 		}
 
-        c.HTML(200, "index.tmpl", gin.H{
+        c.HTML(200, "short.tmpl", gin.H{
             "ShortURL": shorturl.slug,
         })
-		//c.String(200, url+" | "+generatedSlug+" | "+shorturl.url+" | "+shorturl.slug)
-        //c.Redirect(200, "/", gin.H{
-            //"ShortURL": shorturl.slug,
-        //})
 	})
 
 	// To be handled in future ... maybe ... not sure
