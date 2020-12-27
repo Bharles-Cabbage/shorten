@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+
+    <link href="/static/main.css" rel="stylesheet">
+    <title>URL Shortner</title>
+
+</head>
+<body>
+   <h3>Shorten URLs</h3>
+
+   {{ if .ShortURL }}
+   <div>
+        Genrated URL: <a class="text-decoration-none gen" href="http://localhost:8080/r/{{ .ShortURL }}">http://localhost:8080/r/{{ .ShortURL }}</a>
+        <br>
+        <a href="/" class="gen text-decoration-none">Generate more</a>
+   </div>
+   {{ else  }}
+   <form action="/" method="POST">
+        <div class="form-floating mb-3">
+            <input type="url" name="url" class="form-control" id="floatingInput" placeholder="https://www.example.com/products/" required>
+            <label for="floatingInput">URL to be Shortened</label>
+        </div>
+
+        <button type="submit" class="btn">Generate URL</button>
+   </form>
+
+   {{ end }}
+</body>
+</html>
