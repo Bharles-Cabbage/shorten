@@ -29,7 +29,7 @@ type URISlug struct{
 
 func dbFunc(db *sql.DB) gin.HandlerFunc {
     return func(c *gin.Context) {
-        if _, err := db.Exec("CREATE TABLE IF NOT EXISTS urlshortner (URL char(2000) PRIMARY KEY, SLUG CHAR(9) NOT NULL)"); err != nil {
+        if _, err := db.Exec("CREATE TABLE IF NOT EXISTS urlshortner (url char(2000) PRIMARY KEY, slug char(9) NOT NULL)"); err != nil {
             c.String(http.StatusInternalServerError,
                 fmt.Sprintf("Error creating database table: %q", err))
             return
