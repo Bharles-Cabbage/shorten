@@ -19,7 +19,7 @@ import (
 //)
 
 type urlShort struct {
-	url  string
+	url  string 
 	slug string
 }
 
@@ -51,7 +51,7 @@ func dbFunc(db *sql.DB) gin.HandlerFunc {
         defer rows.Close()
         for rows.Next() {
             var url urlShort
-            if err := rows.Scan(&url); err != nil {
+            if err := rows.Scan(&url.url, &url.slug); err != nil {
                 c.String(http.StatusInternalServerError,
                     fmt.Sprintf("Error scanning urlshortner: %q", err))
                 return
