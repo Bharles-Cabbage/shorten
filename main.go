@@ -11,12 +11,12 @@ import (
 	_ "github.com/lib/pq"
 )
 
-const (
-	host     = "localhost"
-	user     = "postgres"
-	password = "docker"
-	dbname   = "golang_practice"
-)
+//const (
+	//host     = "localhost"
+	//user     = "postgres"
+	//password = "docker"
+	//dbname   = "golang_practice"
+//)
 
 type urlShort struct {
 	url  string
@@ -153,7 +153,7 @@ func main() {
 
     router.GET("/db", dbFunc(db))
 
-	router.Run()
+    router.Run(":" + os.Getenv("PORT"))
 }
 
 func randString() string {
