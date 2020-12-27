@@ -95,7 +95,7 @@ func main() {
 
 	router.POST("/short", func(c *gin.Context) {
 		var shorturl urlShort
-		var newshorturl urlShort
+		//var newshorturl urlShort
 		var generatedSlug string
 		var query string
 		url := c.PostForm("url")
@@ -112,7 +112,7 @@ func main() {
 				generatedSlug = randString()
 
 				query = "SELECT * FROM urlshortner WHERE slug='" + generatedSlug + "';"
-				err = db.QueryRow(query).Scan(&newshorturl.url, &newshorturl.slug)
+				err = db.QueryRow(query).Scan(&shorturl.url, &shorturl.slug)
 
 				if err != nil {
 					break
@@ -124,7 +124,7 @@ func main() {
 			checkError(err)
 
 			query = "SELECT * FROM urlshortner WHERE slug='" + generatedSlug + "';"
-			err = db.QueryRow(query).Scan(&newshorturl.url, &newshorturl.slug)
+			err = db.QueryRow(query).Scan(&shorturl.url, &shorturl.slug)
 			checkError(err)
 		} else if err != nil {
 			checkError(err)
