@@ -56,8 +56,7 @@ func dbFunc(db *sql.DB) gin.HandlerFunc {
 
 func main() {
 	router := gin.Default()
-	router.LoadHTMLFiles("static/html/index.tmpl")
-	router.LoadHTMLFiles("static/html/short.tmpl")
+	router.LoadHTMLFiles("static/html/index.tmpl", "static/html/short.tmpl")
     router.StaticFile("/static/main.css", "static/css/main.css")
 
 	//psqlconn := "host=" + host + " port=5432 user=" + user + " password=" + os.Getenv("POSTGRESQL_PASSWORD") + " dbname=" + dbname + " sslmode=disable"
