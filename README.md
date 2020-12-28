@@ -11,7 +11,6 @@ git clone https://github.com/Bharles-Cabbage/shorten.git
 cd shorten
 go build -o bin/shortner -v
 ./bin/shortner
-
 ```
 Set environment variable `PORT` to any port number of you want the app to listen to.
 
