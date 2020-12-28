@@ -18,7 +18,7 @@ Set environment variable `PORT` to any port number of you want the app to listen
 
 - - -
 
-** NOTE ** : The code contain a lots of bad practices. I am current working on making it better.
+**NOTE** : The code contain a lots of bad practices. I am current working on making it better.  
 Hosted at :  [shorten69.herokuapp.com](http://shorten69.herokuapp.com/)
 
 
