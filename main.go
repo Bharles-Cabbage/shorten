@@ -111,7 +111,7 @@ func main() {
 			for {
 				generatedSlug = randString()
 
-				query = "SELECT * FROM urlshortner WHERE slug='" + generatedSlug + "';"
+				query = "SELECT url FROM urlshortner WHERE slug='" + generatedSlug + "';"
 				err = db.QueryRow(query).Scan(&shorturl.url, &shorturl.slug)
 
 				if err != nil {
@@ -123,7 +123,7 @@ func main() {
 			_, err := db.Exec(query, url, generatedSlug)
 			checkError(err)
 
-			query = "SELECT * FROM urlshortner WHERE slug='" + generatedSlug + "';"
+			query = "SELECT url FROM urlshortner WHERE slug='" + generatedSlug + "';"
 			err = db.QueryRow(query).Scan(&shorturl.url, &shorturl.slug)
 			checkError(err)
 		} else if err != nil {
@@ -148,7 +148,7 @@ func main() {
 func randString() string {
 	var chars = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
 
-	randStr := make([]rune, 8)
+	randStr := make([]rune, 1899)
 	for i := range randStr {
 		randStr[i] = chars[rand.Intn(len(chars))]
 	}
