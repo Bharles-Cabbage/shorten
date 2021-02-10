@@ -18,3 +18,8 @@ form {
     background: #1c3954;
     color: #c4c4c4;
 }
+
+.msg{
+    width: 69%;
+    font: 1rem;
+}
